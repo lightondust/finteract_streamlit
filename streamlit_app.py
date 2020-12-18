@@ -6,10 +6,12 @@ import plotly.express as px
 
 @st.cache
 def read_company_info():
-    company_info_path = os.path.join('.','data', 'tse_company_info.csv')
+    company_info_path = os.path.join('.', 'data', 'tse_company_info.csv')
     df = pd.read_csv(company_info_path, index_col=0)
     return df
 
+
+st.text('チュートリアル１、概要')
 
 company_info_df = read_company_info()
 
