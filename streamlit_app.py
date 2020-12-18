@@ -24,7 +24,7 @@ company_info_df = read_company_info()
 st.markdown('''
 # データ表示
 ''')
-st.dataframe(company_info_df)
+st.dataframe(company_info_df.iloc[:20])
 
 st.title('データ可視化')
 
