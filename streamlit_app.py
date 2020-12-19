@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import pandas as pd
 import streamlit as st
 import plotly.express as px
@@ -15,7 +16,7 @@ st.text('チュートリアル１、概要')
 
 company_info_df = read_company_info()
 
-page = st.radio('画面', ['データ', '時価総額', 'セクター別時価総額', '証券コードからセクター別時価総額', '銘柄比較'])
+page = st.radio('画面', ['データ', '時価総額', 'セクター別時価総額', '証券コードからセクター別時価総額', '銘柄比較', '銘柄探索'], index=5)
 
 if page == 'データ':
     # """
@@ -87,3 +88,38 @@ elif page == '銘柄比較':
                  range_y=(1, company_data_multi['時価総額'].max()*1.05),
                  log_y=sector_log_y_multi_code)
     st.plotly_chart(fig)
+
+elif page == '銘柄探索':
+    code_list = company_info_df['code'].to_list()
+    code_explore = st.selectbox('code', code_list, key='code_explore')
+    company_explore_df = company_info_df.copy()
+
+    company_explore_df['per'] = company_explore_df['時価総額'] / company_explore_df['純利益']
+    company_explore_df['profit_rate'] = company_explore_df['純利益'] / company_explore_df['総収入']
+
+    company_src = company_explore_df[company_explore_df.code == code_explore].iloc[0]
+    st.text('code: {}, name: {}'.format(company_src['code'], company_src['名前']))
+    company_src
+
+    sector_weight = st.slider('sector', 0., 1.0, 0.1)
+    pbr_weight = st.slider('pbr', 0., 1.0, 0.1)
+    per_weight = st.slider('per', 0., 1.0, 0.1)
+    profit_rate_weight = st.slider('profit_rate', 0., 1.0, 0.1)
+    market_cap_weight = st.slider('market_cap', 0., 1.0, 0.0)
+    earning_weight = st.slider('earning', 0., 1.0, 0.0)
+    employee_weight = st.slider('employee', 0., 1.0, 0.0)
+
+    def weight_transform(weight):
+        return weight / (1.001 - weight)
+
+    company_explore_df['loss'] = np.log(1+(company_info_df['時価総額'] - company_src['時価総額'])**2) * weight_transform(market_cap_weight) + \
+                                 np.log(1+(company_info_df['純利益'] - company_src['純利益'])**2) * earning_weight + \
+                                 ( 1 - (company_info_df['セクター'] == company_src['セクター'])) * sector_weight + \
+                                 np.log(1+(company_info_df['従業員数'] - company_src['従業員数']) ** 2) * employee_weight + \
+                                 (company_explore_df['per']**(-1) - company_src['per']**(-1)) ** 2 * per_weight + \
+                                 (company_explore_df['PBR'] - company_src['PBR']) ** 2 * pbr_weight + \
+                                 (company_explore_df['profit_rate'] - company_src['profit_rate']) ** 2 * profit_rate_weight
+
+    company_explore_df = company_explore_df.sort_values('loss')
+    company_explore_df[['code', '名前', 'loss', 'セクター', '時価総額', 'per', 'PBR', 'profit_rate']].iloc[:10]
+
