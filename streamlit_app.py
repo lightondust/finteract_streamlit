@@ -16,7 +16,7 @@ st.text('チュートリアル１、概要')
 
 company_info_df = read_company_info()
 
-page = st.radio('画面', ['データ', '時価総額', 'セクター別時価総額', '証券コードからセクター別時価総額', '銘柄比較', '銘柄探索'], index=5)
+page = st.radio('画面', ['データ', '時価総額', 'セクター別時価総額', '証券コードからセクター別時価総額', '銘柄比較', '銘柄探索'])
 
 if page == 'データ':
     # """
@@ -99,7 +99,7 @@ elif page == '銘柄探索':
 
     company_src = company_explore_df[company_explore_df.code == code_explore].iloc[0]
     st.text('code: {}, name: {}'.format(company_src['code'], company_src['名前']))
-    company_src
+    st.dataframe(company_src)
 
     sector_weight = st.slider('sector', 0., 1.0, 0.1)
     pbr_weight = st.slider('pbr', 0., 1.0, 0.1)
@@ -121,5 +121,5 @@ elif page == '銘柄探索':
                                  (company_explore_df['profit_rate'] - company_src['profit_rate']) ** 2 * profit_rate_weight
 
     company_explore_df = company_explore_df.sort_values('loss')
-    company_explore_df[['code', '名前', 'loss', 'セクター', '時価総額', 'per', 'PBR', 'profit_rate']].iloc[:10]
+    st.dataframe(company_explore_df[['code', '名前', 'loss', 'セクター', '時価総額', 'per', 'PBR', 'profit_rate']].iloc[:10])
 
