@@ -1,3 +1,7 @@
-def navigation(st):
-    page = st.sidebar.radio('画面選択', ['データ', '時価総額', 'セクター別時価総額', '証券コードからセクター別時価総額', '銘柄比較', '銘柄探索'])
+import streamlit
+from page_manageer import PAGE_LIST
+
+
+def navigation(st: streamlit):
+    page = st.sidebar.radio('画面選択', PAGE_LIST)
     return page
