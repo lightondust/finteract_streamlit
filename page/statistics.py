@@ -1,34 +1,51 @@
 import streamlit
 from pandas import DataFrame
 import plotly.express as px
+from page.page_util import display_on_map
+
+fields = ['時価総額', '従業員数', '総収入', '純利益']
 
 
 def statistics(st: streamlit, data_df: DataFrame):
-    st.title('統計分布')
+    st.title('データ分布')
 
-    select_method = st.radio('全体 or セクター別', ['全体', 'セクター別', '銘柄を指定'])
+    target_type = st.radio('対象銘柄', ['全体', 'セクター別', '銘柄を選択する'])
+    show_df = filter_data(st, target_type, data_df)
 
-    if select_method == 'セクター別':
-        from_sector_name_or_code = st.radio('選択方法', ['セクター名', 'コードから所属セクター'])
-        if from_sector_name_or_code == 'コードから所属セクター':
-            code_list = data_df['code'].to_list()
+    field = st.selectbox('表示する項目', fields)
+
+    st_fig = st.empty()
+    log_if = st.checkbox('対数スケール', key='log_total')
+    select_type = st.radio('種類', ['大きい順', '値分布'])
+    if select_type == '大きい順':
+        fig = px.bar(show_df.sort_values(field, ascending=False).iloc[:100], x='名前', y=field, log_y=log_if)
+    elif select_type == '値分布':
+        fig = px.histogram(show_df, x=field, log_y=log_if)
+    st_fig.plotly_chart(fig)
+
+    if_map = st.checkbox('本社所在地を地図で見る')
+    if if_map:
+        display_on_map(st, show_df)
+
+
+def filter_data(st, target_type, df_to_filter):
+
+    if target_type == 'セクター別':
+        from_sector_name_or_code = st.radio('選択方法', ['セクター名', '銘柄から所属セクター'])
+        if from_sector_name_or_code == '銘柄から所属セクター':
+            code_list = df_to_filter['code'].to_list()
             code = st.selectbox('証券コード', code_list)
-            company_data = data_df[data_df['code'] == code].iloc[0]
+            company_data = df_to_filter[df_to_filter['code'] == code].iloc[0]
             sector = company_data['セクター']
-            pass
         else:
-            sectors = list(set(data_df['セクター'].to_list()))
+            sectors = list(set(df_to_filter['セクター'].to_list()))
             sector = st.selectbox('セクター', sectors)
-        show_df = data_df[data_df['セクター'] == sector]
-    elif select_method == '銘柄を指定':
-        code_list = data_df['code'].to_list()
+        show_df = df_to_filter[df_to_filter['セクター'] == sector]
+    elif target_type == '銘柄を指定':
+        code_list = df_to_filter['code'].to_list()
         code_list_selected = st.multiselect('code', code_list)
-        show_df = data_df[data_df.code.isin(code_list_selected)].sort_values('時価総額', ascending=False)
+        show_df = df_to_filter[df_to_filter.code.isin(code_list_selected)].sort_values('時価総額', ascending=False)
     else:
-        show_df = data_df
+        show_df = df_to_filter
 
-    log_y = st.checkbox('対数スケール', key='log_total')
-    fig = px.bar(show_df.sort_values('時価総額', ascending=False).iloc[:100], x='名前', y='時価総額', log_y=log_y)
-    st.plotly_chart(fig)
-
-
+    return show_df

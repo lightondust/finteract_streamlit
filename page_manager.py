@@ -2,7 +2,7 @@ from page.data_view import data_view
 from page.statistics import statistics
 from page.explore import explore
 
-PAGE_STATISTICS = ['データ可視化', statistics]
+PAGE_STATISTICS = ['データ分布', statistics]
 PAGE_EXPLORE = ['銘柄探索', explore]
 PAGE_DATA_VIEW = ['データをみる', data_view]
 
