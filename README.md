@@ -1,6 +1,8 @@
 # アプリの確認：
 
-- チュートリアル１，概要: https://share.streamlit.io/lightondust/finteract_streamlit/tutorial1heroku
+- 成果物確認: https://share.streamlit.io/lightondust/finteract_streamlit
+- チュートリアル１のアプリ確認: https://share.streamlit.io/lightondust/finteract_streamlit/tutorial1heroku
+
 
 # ブランチと構造
 
@@ -8,6 +10,9 @@
 
 - チュートリアル１コード: https://github.com/lightondust/finteract_streamlit/tree/tutorial1
     - チュートリアル１確認用: https://github.com/lightondust/finteract_streamlit/tree/tutorial1heroku
+    - チュートリアル1パフォーマンスチューニングしたコード: https://github.com/lightondust/finteract_streamlit/tree/tutorial1heroku
+- チュートリアル2コード: https://github.com/lightondust/finteract_streamlit/tree/tutorial2
+  
   
 # 実行方法
 
