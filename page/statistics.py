@@ -7,7 +7,7 @@ fields = ['時価総額', '従業員数', '総収入', '純利益']
 
 
 def statistics(st: streamlit, data_df: DataFrame):
-    st.title('データ分布')
+    st.title('分布')
 
     target_type = st.radio('対象銘柄', ['全体', 'セクター別', '銘柄を選択する'])
     show_df = filter_data(st, target_type, data_df)
@@ -16,11 +16,15 @@ def statistics(st: streamlit, data_df: DataFrame):
 
     st_fig = st.empty()
     log_if = st.checkbox('対数スケール', key='log_total')
-    select_type = st.radio('種類', ['大きい順', '値分布'])
-    if select_type == '大きい順':
+    select_type = st.radio('種類', ['棒グラフ', 'ヒストグラム', 'ツリーマップ'])
+    if select_type == '棒グラフ':
         fig = px.bar(show_df.sort_values(field, ascending=False).iloc[:100], x='名前', y=field, log_y=log_if)
-    elif select_type == '値分布':
+    elif select_type == 'ヒストグラム':
         fig = px.histogram(show_df, x=field, log_y=log_if)
+    elif select_type == 'ツリーマップ':
+        show_df_ = show_df.sort_values(field, ascending=False)
+        fig = px.treemap(show_df_, values=field, path=['セクター', '名前'], labels=show_df_['名前'])
+
     st_fig.plotly_chart(fig)
 
     if_map = st.checkbox('本社所在地を地図で見る')
