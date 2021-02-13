@@ -3,7 +3,7 @@ from pandas import DataFrame
 import plotly.express as px
 from page.page_util import display_on_map
 
-fields = ['時価総額', '従業員数', '総収入', '純利益']
+fields = ['時価総額', '従業員数', '総収入', '純利益', 'log_price_rate']
 
 
 def statistics(st: streamlit, data_df: DataFrame):
@@ -28,20 +28,32 @@ def statistics(st: streamlit, data_df: DataFrame):
 
 def display_statistics_2d(st: streamlit, show_df: DataFrame, field1: str, field2: str):
     st_fig = st.empty()
-    log_if = st.checkbox('対数スケール', key='log_total')
+    log_x_component = st.empty()
+    log_y_component = st.empty()
+    log_x = log_x_component.checkbox('対数スケールx', key='log_total')
+    log_y = log_y_component.checkbox('対数スケールy', key='log_total')
 
-    select_type = st.radio('グラフ種類', ['散布図'])
+    select_type = st.radio('グラフ種類', ['散布図', 'ツリーマップ'])
 
     if select_type == '散布図':
         fig = px.scatter(show_df,
                          x=field1,
                          y=field2,
-                         log_x=log_if,
-                         log_y=log_if,
+                         log_x=log_x,
+                         log_y=log_y,
                          marginal_x='violin',
                          marginal_y='violin',
                          labels=show_df.display_name,
                          hover_name='display_name')
+    if select_type == 'ツリーマップ':
+        log_y_component.empty()
+        log_x_component.empty()
+        show_df_ = show_df.sort_values(field1).iloc[:100]
+        fig = px.treemap(show_df_,
+                         values=field1,
+                         path=['セクター', 'display_name'],
+                         labels=show_df_['display_name'],
+                         color=show_df_[field2])
 
     st_fig.plotly_chart(fig)
 
