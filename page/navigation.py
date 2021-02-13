@@ -10,7 +10,9 @@ def navigation(st: streamlit, page: list):
         if page_idx_url in list(range(len(PAGE_ORDER))):
             page_idx_default = page_idx_url
 
-    page_selected = st.sidebar.radio('画面選択', PAGE_ORDER, index=page_idx_default)
+    st.sidebar.title('画面選択')
+
+    page_selected = st.sidebar.radio('', PAGE_ORDER, index=page_idx_default)
 
     page_idx = PAGE_ORDER.index(page_selected)
     st.experimental_set_query_params(page=page_idx)
