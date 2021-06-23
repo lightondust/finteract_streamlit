@@ -3,10 +3,13 @@ from page.navigation import navigation
 from page_manager import PAGE_MAP
 from pre_process import read_company_info
 from auth.login import login_component
+import copy
 
-st.text('チュートリアル2、使い勝手改善：サイドバー、モジュール分け、プレースホルダー')
+st.set_page_config(layout="wide")
 
-company_info_df = read_company_info()
+st.text('')
+
+company_info_df = copy.deepcopy(read_company_info())
 
 params = st.experimental_get_query_params()
 
