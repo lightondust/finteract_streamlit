@@ -12,7 +12,7 @@ def control_threshold(st, fig_args, data_df):
         th_field = st.selectbox('threshold by:', ['時価総額', '総収入', '純利益', 'pageRank'])
         fig_args['hover_data'] += [th_field]
 
-        th_max = float(data_df[th_field].max())
+        th_max = float(data_df[th_field].max()) / 4.
         th_start = th_max/2.
         th = st.slider('threshold', 0.01, th_max, th_start, th_max / 100., key=th_field)
         data_df['size'] = data_df[th_field]
