@@ -120,13 +120,14 @@ def control_filtering_and_emphasis(st, fig_args, data_df, th, th_field, distance
     return fig_args, show_df
 
 
-def control_filtering_by_sector(st, fig_args, data_df, show_df):
+def control_filtering_by_field(st, fig_args, data_df, show_df):
 
-    if_sector_filter = st.sidebar.checkbox('filter by sector')
-    if if_sector_filter:
-        sector_field = 'セクター'
-        sector_list = st.sidebar.multiselect('sector:', list(set(data_df[sector_field].tolist())))
+    if_filter_by_field = st.sidebar.checkbox('filter by cluster')
+    if if_filter_by_field:
+        # filter_field = 'セクター'
+        filter_field = st.sidebar.selectbox('cluster type:', ['セクター', 'community'])
+        sector_list = st.sidebar.multiselect('choose cluster:', list(set(data_df[filter_field].tolist())))
         if sector_list:
-            show_df = show_df[show_df[sector_field].isin(sector_list)]
+            show_df = show_df[show_df[filter_field].isin(sector_list)]
 
     return fig_args, show_df

@@ -11,10 +11,6 @@ st.text('')
 
 company_info_df = copy.deepcopy(read_company_info())
 
-params = st.experimental_get_query_params()
-
-login_state = login_component(st)
-
-page_to_display = navigation(st, page=params.get('page'))
+page_to_display = navigation(st)
 
 PAGE_MAP[page_to_display](st, company_info_df)

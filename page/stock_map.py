@@ -3,7 +3,7 @@ import streamlit
 
 from stock_map_module.controller import control_coordinate_type, control_text, \
     control_color, control_size_power, control_threshold, control_filtering_and_emphasis, \
-    control_filtering_by_sector
+    control_filtering_by_field
 from stock_map_module.component import display_filtered_information
 
 
@@ -22,7 +22,7 @@ def stock_map(st: streamlit, data_df):
 
     fig_args, show_df = control_filtering_and_emphasis(st, fig_args, data_df, th, th_field, distance_th)
 
-    fig_args, show_df = control_filtering_by_sector(st, fig_args, data_df, show_df)
+    fig_args, show_df = control_filtering_by_field(st, fig_args, data_df, show_df)
 
     if show_df.shape[0]:
         print(show_df.shape)
