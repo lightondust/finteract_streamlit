@@ -15,5 +15,27 @@ def read_company_info():
     return df
 
 
+@st.cache
+def read_price_info():
+
+    def reform_price_data(df):
+        df = df.T
+        df = df.reset_index()
+        df = df.rename(columns={'index': 'code'})
+        df['code'] = df['code'].astype(int)
+        return df
+
+    price_info_path = os.path.join('.', 'data', 'stooq_200d.csv')
+    return_info_path = os.path.join('.', 'data', 'stooq_200d_log_return.csv')
+
+    price_df = pd.read_csv(price_info_path, index_col=0)
+    return_df = pd.read_csv(return_info_path, index_col=0)
+
+    price_df = reform_price_data(price_df)
+    return_df = reform_price_data(return_df)
+
+    return price_df, return_df
+
+
 def to_oku(df_):
     return df_ / 10 ** 8

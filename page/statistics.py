@@ -2,11 +2,13 @@ import streamlit
 from pandas import DataFrame
 import plotly.express as px
 from page.page_util import display_on_map
+from const import COMPANY_INFO
 
 fields = ['時価総額', '従業員数', '総収入', '純利益', 'log_price_rate']
 
 
-def statistics(st: streamlit, data_df: DataFrame):
+def statistics(st: streamlit, data):
+    data_df = data[COMPANY_INFO]
     st.title('データ分布')
 
     target_type = st.radio('対象銘柄', ['全体', 'セクター別', '銘柄を個別指定'])

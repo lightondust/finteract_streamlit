@@ -74,17 +74,23 @@ def control_size(st, fig_args):
     return fig_args
 
 
-def control_color(st, fig_args, data_df):
+def control_color(st, fig_args, data_df, return_df):
     color_type = st.sidebar.selectbox('color:',
-                                      ['none', 'return_ratio', 'log_price_rate', 'community', 'セクター', 'セクター_en'])
-    if color_type != 'none':
+                                      ['none', 'return_ratio', 'log_price_rate', 'community',
+                                       'セクター', 'セクター_en', 'daily_return'])
+    if color_type == 'none':
+        data_df['color'] = data_df['color_default']
+    elif color_type == 'daily_return':
+        day = st.sidebar.selectbox('day', list(return_df.columns)[1:])
+        # data_df['color'] = data_df['color_default']
+        data_df = data_df.merge(return_df[['code', day]], on='code')
+        data_df['color'] = data_df[day]
+    else:
         fig_args['hover_data'] += [color_type]
         if color_type == 'log_price_rate':
             data_df['color'] = data_df[color_type] / np.absolute(data_df[color_type]).max()
             fig_args['range_color'] = [-1., 1.]
         data_df['color'] = data_df[color_type]
-    else:
-        data_df['color'] = data_df['color_default']
 
     color_scale = st.sidebar.selectbox('color scale', ['default'] + px.colors.named_colorscales())
     if color_scale != 'default':

@@ -1,9 +1,11 @@
 from pandas import DataFrame
 import streamlit
 import numpy as np
+from const import COMPANY_INFO
 
 
-def explore(st: streamlit, data_df: DataFrame):
+def explore(st: streamlit, data):
+    data_df = data[COMPANY_INFO]
 
     code_list = data_df['code'].to_list()
     code_explore = st.selectbox('code', code_list, key='code_explore')

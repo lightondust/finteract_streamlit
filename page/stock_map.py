@@ -5,9 +5,12 @@ from stock_map_module.controller import control_coordinate_type, control_text, \
     control_color, control_size_power, control_threshold, control_filtering_and_emphasis, \
     control_filtering_by_field
 from stock_map_module.component import display_filtered_information
+from const import COMPANY_INFO, RETURN_INFO, PRICE_INFO
 
 
-def stock_map(st: streamlit, data_df):
+def stock_map(st: streamlit, data):
+
+    data_df = data[COMPANY_INFO]
 
     fig_args = {
         'size_max': 100,
@@ -18,14 +21,14 @@ def stock_map(st: streamlit, data_df):
     fig_args, data_df, th_field, th, distance_th = control_threshold(st, fig_args, data_df)
     fig_args = control_coordinate_type(st, fig_args, data_df)
     fig_args = control_text(st, fig_args)
-    fig_args, data_df = control_color(st, fig_args, data_df)
+    fig_args, data_df = control_color(st, fig_args, data_df, data[RETURN_INFO])
 
     fig_args, show_df = control_filtering_and_emphasis(st, fig_args, data_df, th, th_field, distance_th)
 
     fig_args, show_df = control_filtering_by_field(st, fig_args, data_df, show_df)
 
     if show_df.shape[0]:
-        print(show_df.shape)
+        # print(show_df.shape)
         fig_vec = px.scatter(show_df, symbol='marker', symbol_map={'-': 'circle', 'x': 'square'},
                              **fig_args
                              )
