@@ -1,3 +1,5 @@
+import datetime
+
 from stock_map_module.util import range_from_series
 import plotly.express as px
 import numpy as np
@@ -81,10 +83,25 @@ def control_color(st, fig_args, data_df, return_df):
     if color_type == 'none':
         data_df['color'] = data_df['color_default']
     elif color_type == 'daily_return':
-        day = st.sidebar.selectbox('day', list(return_df.columns)[1:])
-        # data_df['color'] = data_df['color_default']
-        data_df = data_df.merge(return_df[['code', day]], on='code')
-        data_df['color'] = data_df[day]
+        day_se = return_df.columns.to_series()[1:]
+        day_list = pd.to_datetime(day_se).dt.date.to_list()
+
+        day_end = max(day_list)
+        day_start = min(day_list)
+        format = 'MMM DD, YYYY'  # format output
+        day = st.sidebar.slider('Select date', min_value=day_start, value=day_end, max_value=day_end, format=format)
+        day = datetime.datetime.strftime(day, '%Y-%m-%d')
+
+        # day = st.sidebar.selectbox('day', list(return_df.columns)[1:])
+        fig_args['title'] = day
+
+        if day in return_df.columns:
+            data_df = data_df.merge(return_df[['code', day]], on='code')
+            data_df['color'] = data_df[day]
+            # max_ = np.absolute(data_df['color']).max()
+            fig_args['range_color'] = [-0.1, 0.1]
+        else:
+            data_df['color'] = 0.
     else:
         fig_args['hover_data'] += [color_type]
         if color_type == 'log_price_rate':

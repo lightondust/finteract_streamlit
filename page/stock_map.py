@@ -1,5 +1,6 @@
 import plotly.express as px
 import streamlit
+from plotly.graph_objs import Layout
 
 from stock_map_module.controller import control_coordinate_type, control_text, \
     control_color, control_size_power, control_threshold, control_filtering_and_emphasis, \
@@ -35,6 +36,8 @@ def stock_map(st: streamlit, data):
 
         height = 1000
         width = 1000
+        fig_vec.update_xaxes(showgrid=False)
+        fig_vec.update_yaxes(showgrid=False)
         fig_vec.update_layout(width=width, height=height)
         st.plotly_chart(fig_vec, height=height, width=width)
 
