@@ -48,14 +48,19 @@ def display_statistics_2d(st: streamlit, show_df: DataFrame, field1: str, field2
                          labels=show_df.display_name,
                          hover_name='display_name')
     if select_type == 'ツリーマップ':
+        fig_args = {}
         log_y_component.empty()
         log_x_component.empty()
         show_df_ = show_df.sort_values(field1).iloc[:100]
+        # show_df_ = show_df.sort_values(field1)
+        if field2 == 'log_price_rate':
+            fig_args['color_continuous_scale'] = 'brbg'
+            fig_args['range_color'] = (-0.3, 0.3)
         fig = px.treemap(show_df_,
                          values=field1,
                          path=['セクター', 'display_name'],
                          labels=show_df_['display_name'],
-                         color=show_df_[field2])
+                         color=show_df_[field2], **fig_args)
 
     st_fig.plotly_chart(fig)
 
