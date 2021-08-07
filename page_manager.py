@@ -3,15 +3,18 @@ from page.statistics import statistics
 from page.explore import explore
 from page.stock_map import stock_map
 from page.stock_view import stock_view
+from page.price_correlation import price_correlation
 
 PAGE_STATISTICS = ['データ分布', statistics]
 PAGE_EXPLORE = ['銘柄探索', explore]
 PAGE_DATA_VIEW = ['データをみる', data_view]
 PAGE_STOCK_MAP = ['銘柄地図', stock_map]
 PAGE_STOCK_VIEW = ['銘柄リンク', stock_view]
+PAGE_STOCK_PRICE = ['値動き相関', price_correlation]
 
 _PAGE_ORDER = [
     PAGE_STOCK_MAP,
+    PAGE_STOCK_PRICE,
     PAGE_STATISTICS,
     PAGE_EXPLORE,
     PAGE_DATA_VIEW,
